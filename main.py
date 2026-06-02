@@ -41,14 +41,14 @@ async def handle_album(message: Message, bot: Bot):
     """
     Хэндлер для обработки альбомов (MediaGroups).
     Собирает все части альбома и отправляет их в канал, 
-    после чего добавляет отдельное сообщение с кнопкой.
+    после чего добавляет отдельный стикер с кнопкой.
     """
     group_id = message.media_group_id
     
     if group_id not in album_cache:
         # Если это первое сообщение альбома, создаем список и ждем остальные части
         album_cache[group_id] = [message]
-        await asyncio.sleep(2)  # Небольшой debounce, чтобы Telegram успел прислать все элементы
+        await asyncio.sleep(2)  # Небольшой debounce
         
         # Извлекаем и удаляем альбом из кэша
         messages = album_cache.pop(group_id)
@@ -57,22 +57,22 @@ async def handle_album(message: Message, bot: Bot):
         message_ids = [m.message_id for m in messages]
         
         try:
-            # Отправляем альбом целиком в канал (доступно в aiogram 3.3+)
+            # Отправляем альбом целиком в канал
             await bot.copy_messages(
                 chat_id=CHANNEL_ID,
                 from_chat_id=message.chat.id,
                 message_ids=message_ids
             )
-            # Отправляем кнопку отдельным сообщением следом
-            await bot.send_message(
+            # Отправляем стикер с прикрепленной кнопкой
+            await bot.send_sticker(
                 chat_id=CHANNEL_ID,
-                text="👇",
+                sticker=STICKER_FILE_ID,
                 reply_markup=get_keyboard()
             )
-            await message.reply("✅ Альбом успешно отправлен в канал!")
+            await message.reply("✅ Альбом со стикером успешно отправлен в канал!")
         except Exception as e:
             logging.error(f"Ошибка при отправке альбома: {e}")
-            await message.reply("❌ Ошибка при отправке альбома. Проверьте права бота в канале.")
+            await message.reply("❌ Ошибка при отправке альбома. Проверьте права бота и правильность STICKER_FILE_ID.")
     else:
         # Добавляем последующие элементы альбома в кэш
         album_cache[group_id].append(message)
