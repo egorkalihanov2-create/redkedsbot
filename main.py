@@ -14,6 +14,7 @@ ADMIN_ID = int(os.getenv("ADMIN_ID", 0))
 CHANNEL_ID = os.getenv("CHANNEL_ID")
 BUTTON_TEXT = os.getenv("BUTTON_TEXT", "Записаться")
 BUTTON_URL = os.getenv("BUTTON_URL", "https://t.me/masherk")
+STICKER_FILE_ID = os.getenv("AAMCAgADGQEAAUtO02oernXdn09dR5lq8vk_bSJ2P_7xAAJBmQACAjrxSPaozwj28P_YAQAHbQADOwQ")
 
 # Инициализируем роутер
 router = Router()
